@@ -39,7 +39,7 @@ function SelectModeContent() {
 
     useEffect(() => {
         // Fetch question counts
-        fetch('/api/modules/stats')
+        fetch('/api/modules/module-stats')
             .then(res => res.json())
             .then(data => setModuleCounts(data))
             .catch(err => console.error(err));

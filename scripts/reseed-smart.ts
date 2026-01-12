@@ -235,6 +235,7 @@ async function main() {
                     text: q.text,
                     options: q.options,
                     correct: q.correct,
+                    // @ts-ignore
                     module: q.module,
                     examId: exam.id
                 }
