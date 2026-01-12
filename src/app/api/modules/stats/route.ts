@@ -12,11 +12,17 @@ export async function GET() {
         // Convert to easy dictionary: { "IoT Hacking": 3 }
         const stats: Record<string, number> = {};
         // @ts-ignore
-        group.forEach((g: any) => {
-            if (g.module) {
-                stats[g.module] = g._count.id;
+        // Use loop to avoid type issues
+        for (const g of group) {
+            // @ts-ignore
+            const mod = g.module;
+            // @ts-ignore
+            const count = g._count.id;
+
+            if (mod) {
+                stats[mod] = count;
             }
-        });
+        }
 
         return NextResponse.json(stats);
     } catch (error) {
