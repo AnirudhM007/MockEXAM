@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Exam {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String
+  questions   Question[]
+}
+
+model Question {
+  id        String @id @default(cuid())
+  examId    String
+  text      String
+  options   String
+  correct   String
+  module    String?
+  exam      Exam   @relation(fields: [examId], references: [id])
+}
+
+model Attempt {
+  id        String @id @default(cuid())
+  score     Int
+  total     Int
+  date      DateTime @default(now())
+}

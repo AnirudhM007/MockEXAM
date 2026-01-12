@@ -1,26 +1,57 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Cyber Dark Theme Palette */
+  --color-cyber-blue: #00f3ff;
+  --color-cyber-green: #00ff9d;
+  --color-cyber-dark: #0a0a0f;
+  --color-cyber-gray: #12121a;
+  --color-cyber-highlight: #1a1a24;
+  --color-cyber-danger: #ff0055;
+
+  --shadow-neon-blue: 0 0 10px #00f3ff, 0 0 20px #00f3ff20;
+  --shadow-neon-green: 0 0 10px #00ff9d, 0 0 20px #00ff9d20;
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+  --background: #0a0a0f;
+  --foreground: #ededed;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* Custom Utilities */
+@layer utilities {
+  .text-glow {
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  .card-glass {
+    background: rgba(18, 18, 26, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .bg-cyber-grid {
+    background-image: radial-gradient(circle at 50% 50%, #00f3ff10 1px, transparent 1px);
+    background-size: 24px 24px;
   }
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
+  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+@utility animate-scanline {
+  animation: scanline 8s linear infinite;
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(100%);
+  }
 }
