@@ -31,6 +31,11 @@ export function QuizInterface({ questions, examName }: QuizInterfaceProps) {
         return () => clearInterval(timer);
     }, []);
 
+    // Scroll to top when question changes
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [currentIndex]);
+
     const handleOptionSelect = (option: string) => {
         setAnswers(prev => ({
             ...prev,
