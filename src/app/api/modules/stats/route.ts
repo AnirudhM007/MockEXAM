@@ -11,7 +11,8 @@ export async function GET() {
 
         // Convert to easy dictionary: { "IoT Hacking": 3 }
         const stats: Record<string, number> = {};
-        group.forEach(g => {
+        // @ts-ignore
+        group.forEach((g: any) => {
             if (g.module) {
                 stats[g.module] = g._count.id;
             }
