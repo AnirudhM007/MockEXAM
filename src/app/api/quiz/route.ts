@@ -12,6 +12,12 @@ export async function GET(request: Request) {
     }
 
     try {
+        // Debug logging
+        console.log('=== QUIZ API DEBUG ===');
+        console.log('examName:', examName);
+        console.log('mode:', mode);
+        console.log('modules (raw):', modules);
+
         const whereClause: any = { name: examName };
 
         const exam = await prisma.exam.findUnique({
@@ -31,6 +37,14 @@ export async function GET(request: Request) {
                 }
             },
         });
+
+        console.log('modules array after split:', modules ? modules.split(',') : 'undefined');
+        console.log('Found exam:', exam ? 'YES' : 'NO');
+        console.log('Questions found:', exam?.questions.length || 0);
+        if (exam?.questions && exam.questions.length > 0) {
+            console.log('Sample question modules:', exam.questions.slice(0, 3).map(q => q.module));
+        }
+        console.log('======================\n');
 
         if (!exam) {
             return NextResponse.json({ error: 'Exam not found' }, { status: 404 });

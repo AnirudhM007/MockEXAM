@@ -39,8 +39,8 @@ const QuizContent = () => {
     useEffect(() => {
         async function fetchQuestions() {
             try {
-                let url = `/api/quiz?exam=${exam}&mode=${mode}`;
-                if (modules) url += `&modules=${modules}`;
+                let url = `/api/quiz?exam=${encodeURIComponent(exam)}&mode=${encodeURIComponent(mode)}`;
+                if (modules) url += `&modules=${encodeURIComponent(modules)}`;
                 const res = await fetch(url);
                 if (!res.ok) throw new Error('Failed to fetch');
                 const data = await res.json();
@@ -61,7 +61,7 @@ const QuizContent = () => {
             }
         }
         fetchQuestions();
-    }, [exam, mode]);
+    }, [exam, mode, modules]);
 
     if (loading) {
         return (

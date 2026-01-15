@@ -1,0 +1,35 @@
+Sample questions to check for watermarks:
+
+
+=== Question 1 ===
+Module: System Hacking
+Full Text:
+What tool can crack Windows SMB passwords simply by listening to network traffic?
+================================================================================
+
+=== Question 2 ===
+Module: Cryptography
+Full Text:
+By using a smart card and pin, you are using a two-factor authentication that satisfies
+================================================================================
+
+=== Question 3 ===
+Module: Sniffing
+Full Text:
+What is the way to decide how a packet will move from an untrusted outside host to a protected inside that
+is behind a firewall, which permits the hacker to determine which ports are open and if the packets can pass
+through the packet-filtering of the firewall?
+================================================================================
+
+=== Question 4 ===
+Module: Introduction to Ethical Hacking
+Full Text:
+Based on the following extract from the log of a compromised machine, what is the hacker really trying to
+steal?
+================================================================================
+
+=== Question 5 ===
+Module: Enumeration
+Full Text:
+Which of the following tools are used for enumeration? (Choose three.)
+================================================================================

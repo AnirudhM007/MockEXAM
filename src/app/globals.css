@@ -33,6 +33,10 @@
     background-image: radial-gradient(circle at 50% 50%, #00f3ff10 1px, transparent 1px);
     background-size: 24px 24px;
   }
+
+  .animate-scanline {
+    animation: scanline 8s linear infinite;
+  }
 }
 
 body {
@@ -40,10 +44,6 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
   overflow-x: hidden;
-}
-
-@utility animate-scanline {
-  animation: scanline 8s linear infinite;
 }
 
 @keyframes scanline {
