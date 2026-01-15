@@ -69,7 +69,7 @@ function SelectModeContent() {
         { id: 'short', label: 'Quick Scan', desc: '15 Questions - Rapid assessment' },
         { id: 'medium', label: 'Standard Audit', desc: '25 Questions - Balanced test' },
         { id: 'grind', label: 'Deep Dive', desc: '50 Questions - Comprehensive' },
-        { id: 'custom', label: 'Targeted', desc: 'Custom module selection' }
+        { id: 'full', label: 'Full Test', desc: '125 Questions - Real CEH exam simulation' }
     ];
 
     return (
@@ -117,45 +117,48 @@ function SelectModeContent() {
                             </div>
                         </section>
 
-                        {/* Module Selection */}
-                        <section className="bg-[var(--color-cyber-gray)] rounded-xl border border-[var(--color-cyber-highlight)] p-6 shadow-sm">
-                            <h2 className="text-lg font-bold text-white mb-4 flex items-center">
-                                <span className="w-8 h-8 rounded-full bg-[var(--color-cyber-blue)] text-black flex items-center justify-center mr-3 text-sm font-bold shadow-[var(--shadow-neon-blue)]">2</span>
-                                Select Modules
-                            </h2>
-                            <div className="grid sm:grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                                {MODULES.map((mod, index) => {
-                                    const isSelected = selectedModules.includes(mod);
-                                    const count = moduleCounts[mod] || 0;
-                                    const isEmpty = count === 0;
 
-                                    return (
-                                        <div
-                                            key={index}
-                                            onClick={() => !isEmpty && toggleModule(index)}
-                                            className={`
+                        {/* Module Selection - Only show if NOT Full Test */}
+                        {mode !== 'full' && (
+                            <section className="bg-[var(--color-cyber-gray)] rounded-xl border border-[var(--color-cyber-highlight)] p-6 shadow-sm">
+                                <h2 className="text-lg font-bold text-white mb-4 flex items-center">
+                                    <span className="w-8 h-8 rounded-full bg-[var(--color-cyber-blue)] text-black flex items-center justify-center mr-3 text-sm font-bold shadow-[var(--shadow-neon-blue)]">2</span>
+                                    Select Modules
+                                </h2>
+                                <div className="grid sm:grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                                    {MODULES.map((mod, index) => {
+                                        const isSelected = selectedModules.includes(mod);
+                                        const count = moduleCounts[mod] || 0;
+                                        const isEmpty = count === 0;
+
+                                        return (
+                                            <div
+                                                key={index}
+                                                onClick={() => !isEmpty && toggleModule(index)}
+                                                className={`
                           p-3 rounded border transition-all flex items-center justify-between text-sm
                           ${isEmpty ? 'opacity-50 cursor-not-allowed border-gray-800 bg-gray-900/50' : 'cursor-pointer'}
                           ${!isEmpty && isSelected
-                                                    ? 'border-[var(--color-cyber-green)] bg-[var(--color-cyber-green)]/20 text-white shadow-[0_0_15px_rgba(0,255,65,0.3)]'
-                                                    : !isEmpty ? 'border-[var(--color-cyber-highlight)] text-gray-400 hover:bg-[var(--color-cyber-highlight)]/50' : ''}
+                                                        ? 'border-[var(--color-cyber-green)] bg-[var(--color-cyber-green)]/20 text-white shadow-[0_0_15px_rgba(0,255,65,0.3)]'
+                                                        : !isEmpty ? 'border-[var(--color-cyber-highlight)] text-gray-400 hover:bg-[var(--color-cyber-highlight)]/50' : ''}
                         `}
-                                        >
-                                            <div className="flex flex-col overflow-hidden">
-                                                <span className="truncate font-medium">{mod}</span>
-                                                <span className={`text-xs ${isEmpty ? 'text-gray-600' : 'text-gray-500'}`}>{count} Questions</span>
-                                            </div>
-                                            {!isEmpty && (
-                                                <div className={`w-5 h-5 border rounded flex items-center justify-center ${isSelected ? 'bg-[var(--color-cyber-green)] border-[var(--color-cyber-green)] shadow-[var(--shadow-neon-green)]' : 'border-gray-600 bg-transparent'}`}>
-                                                    {isSelected && <svg className="w-3.5 h-3.5 text-black font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" /></svg>}
+                                            >
+                                                <div className="flex flex-col overflow-hidden">
+                                                    <span className="truncate font-medium">{mod}</span>
+                                                    <span className={`text-xs ${isEmpty ? 'text-gray-600' : 'text-gray-500'}`}>{count} Questions</span>
                                                 </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                            <p className="text-xs text-gray-500 mt-4 italic">Select none to include questions from all modules.</p>
-                        </section>
+                                                {!isEmpty && (
+                                                    <div className={`w-5 h-5 border rounded flex items-center justify-center ${isSelected ? 'bg-[var(--color-cyber-green)] border-[var(--color-cyber-green)] shadow-[var(--shadow-neon-green)]' : 'border-gray-600 bg-transparent'}`}>
+                                                        {isSelected && <svg className="w-3.5 h-3.5 text-black font-bold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" /></svg>}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                <p className="text-xs text-gray-500 mt-4 italic">Select none to include questions from all modules.</p>
+                            </section>
+                        )}
 
                     </div>
 

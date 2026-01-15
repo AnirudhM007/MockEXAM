@@ -46,7 +46,8 @@ export async function GET(request: Request) {
         if (mode === 'short') limit = 15;
         else if (mode === 'medium') limit = 25;
         else if (mode === 'grind') limit = 50;
-        // 'full' takes all (or limited to exam standard length if we have more)
+        else if (mode === 'full') limit = 125;
+        // No mode specified = all questions
 
         const selectedQuestions = questions.slice(0, limit).map(q => ({
             ...q,
