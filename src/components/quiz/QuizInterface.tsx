@@ -277,10 +277,9 @@ export function QuizInterface({ questions, examName }: QuizInterfaceProps) {
                                 </Button>
                             )}
                         </div>
-                    </div>
-                </Card>
-            </motion.div>
-        </AnimatePresence>
-        </div >
+                    </Card>
+                </motion.div>
+            </AnimatePresence>
+        </div>
     );
 }
