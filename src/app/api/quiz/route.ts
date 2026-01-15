@@ -25,7 +25,7 @@ export async function GET(request: Request) {
             include: {
                 questions: {
                     where: modules ? {
-                        module: { in: modules.split(',') }
+                        module: { in: modules.split(',').map(m => m.trim()) }
                     } : undefined,
                     select: {
                         id: true,
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
             },
         });
 
-        console.log('modules array after split:', modules ? modules.split(',') : 'undefined');
+        console.log('modules array after split:', modules ? modules.split(',').map(m => m.trim()) : 'undefined');
         console.log('Found exam:', exam ? 'YES' : 'NO');
         console.log('Questions found:', exam?.questions.length || 0);
         if (exam?.questions && exam.questions.length > 0) {
