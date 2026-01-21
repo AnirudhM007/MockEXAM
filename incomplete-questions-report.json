@@ -1,0 +1,56 @@
+[
+  {
+    "id": "cmkfsd88n0024dsfekg9vu9s7",
+    "text": "A company’s policy requires employees to perform file transfers using protocols which encrypt traffi...",
+    "module": "Cryptography",
+    "reason": "Contains \"examine the\""
+  },
+  {
+    "id": "cmkfsd81p000rdsfes5wkwd9i",
+    "text": "Study the following log extract and identify the attack....",
+    "module": "Introduction to Ethical Hacking",
+    "reason": "Contains \"study the\""
+  },
+  {
+    "id": "cmkfsd8k10053dsfevjgfkayz",
+    "text": "Study the snort rule given below:\nFrom the options below, choose the exploit against which this rule...",
+    "module": "Hacking Wireless Networks",
+    "reason": "Contains \"given below\""
+  },
+  {
+    "id": "cmkfsd8uh0080dsfe0wsr7jkb",
+    "text": "Which definition among those given below best describes a covert channel?...",
+    "module": "Cryptography",
+    "reason": "Contains \"given below\""
+  },
+  {
+    "id": "cmkfsd9g300egdsfeb657c1gh",
+    "text": "Study the snort rule given below and interpret the rule. alert tcp any any --> 192.168.1.0/24 111\n(c...",
+    "module": "SQL Injection",
+    "reason": "Contains \"given below\""
+  },
+  {
+    "id": "cmkfsd9n200gedsfexnr7cooa",
+    "text": "You receive an e-mail like the one shown below. When you click on the link contained in the mail, yo...",
+    "module": "Malware Threats",
+    "reason": "Contains \"shown below\""
+  },
+  {
+    "id": "cmkfsda2b00ktdsfefidn61n8",
+    "text": "Firewalk has just completed the second phase (the scanning phase) and a technician receives the outp...",
+    "module": "Scanning Networks",
+    "reason": "Contains \"shown below\""
+  },
+  {
+    "id": "cmkfsda9h00mydsfe36j95uj2",
+    "text": "Given below are different steps involved in the vulnerability-management life cycle.\n1) Remediation\n...",
+    "module": "Vulnerability Analysis",
+    "reason": "Contains \"given below\""
+  },
+  {
+    "id": "cmkfsdabs00nkdsfe1p76nmh3",
+    "text": "Jake, a professional hacker, installed spyware on a target iPhone to spy on the target user's activi...",
+    "module": "Hacking Mobile Platforms",
+    "reason": "Contains \"screenshot\""
+  }
+]

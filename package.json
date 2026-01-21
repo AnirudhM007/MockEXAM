@@ -10,26 +10,30 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "next": "16.1.1",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
     "@prisma/client": "5.19.1",
-    "prisma": "5.19.1",
+    "@types/prismjs": "^1.26.5",
+    "canvas": "^3.2.1",
     "clsx": "^2.1.0",
-    "tailwind-merge": "^2.2.0",
     "framer-motion": "^11.0.0",
     "lucide-react": "^0.300.0",
-    "pdf-parse": "^1.1.1"
+    "next": "16.1.1",
+    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^5.4.530",
+    "prisma": "5.19.1",
+    "prismjs": "^1.30.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "tailwind-merge": "^2.2.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pdf-parse": "^1.1.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "@types/pdf-parse": "^1.1.0"
+    "typescript": "^5"
   }
 }

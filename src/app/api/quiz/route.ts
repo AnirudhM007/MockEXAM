@@ -32,7 +32,21 @@ export async function GET(request: Request) {
                         text: true,
                         options: true,
                         correct: true,
-                        module: true
+                        module: true,
+                        hasContext: true,
+                        contextType: true,
+                        contexts: {
+                            select: {
+                                id: true,
+                                type: true,
+                                content: true,
+                                position: true,
+                                metadata: true
+                            },
+                            orderBy: {
+                                position: 'asc'
+                            }
+                        }
                     }
                 }
             },

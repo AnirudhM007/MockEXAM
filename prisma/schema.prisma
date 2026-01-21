@@ -21,7 +21,26 @@ model Question {
   options   String
   correct   String
   module    String?
+  
+  // Context fields for images, code blocks, etc.
+  hasContext   Boolean  @default(false)
+  contextType  String?  // "image", "code", "diagram", "mixed"
+  
   exam      Exam   @relation(fields: [examId], references: [id])
+  contexts  QuestionContext[]
+}
+
+model QuestionContext {
+  id          String    @id @default(cuid())
+  questionId  String
+  type        String    // "image", "code_block", "diagram", "rule"
+  content     String    @db.Text  // For code: the code text; for images: file path
+  position    Int       // Order/position relative to question (0 = before question, 1+ = after)
+  metadata    String?   @db.Text  // JSON: { language, dimensions, etc. }
+  
+  question    Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  
+  @@index([questionId])
 }
 
 model Attempt {

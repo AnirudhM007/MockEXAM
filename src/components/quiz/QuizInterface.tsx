@@ -6,12 +6,20 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { QuestionContext } from './QuestionContext';
 
 interface Question {
     id: string;
     text: string;
     options: string[];
     correct: string;
+    contexts?: Array<{
+        id: string;
+        type: string;
+        content: string;
+        position: number;
+        metadata?: string;
+    }>;
 }
 
 interface QuizInterfaceProps {
@@ -149,9 +157,19 @@ export function QuizInterface({ questions, examName }: QuizInterfaceProps) {
                 >
                     <Card className="min-h-[400px] flex flex-col justify-between p-8 bg-[var(--color-cyber-gray)] shadow-[var(--shadow-glass)] border border-[var(--color-cyber-highlight)] text-gray-200">
                         <div className="space-y-8">
+                            {/* Display question context (code blocks, images, etc.) before question */}
+                            {currentQuestion.contexts && currentQuestion.contexts.filter(c => c.position === 0).length > 0 && (
+                                <QuestionContext contexts={currentQuestion.contexts.filter(c => c.position === 0)} />
+                            )}
+
                             <h2 className="text-xl font-medium text-white leading-relaxed">
                                 {currentQuestion.text}
                             </h2>
+
+                            {/* Display question context after question text */}
+                            {currentQuestion.contexts && currentQuestion.contexts.filter(c => c.position > 0).length > 0 && (
+                                <QuestionContext contexts={currentQuestion.contexts.filter(c => c.position > 0)} />
+                            )}
 
                             <div className="grid gap-3">
                                 {currentQuestion.options.map((option, idx) => {
