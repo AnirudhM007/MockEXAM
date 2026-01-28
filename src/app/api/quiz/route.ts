@@ -20,6 +20,7 @@ export async function GET(request: Request) {
 
         const whereClause: any = { name: examName };
 
+        // @ts-expect-error - Prisma types don't recognize new schema fields in include+select pattern
         const exam = await prisma.exam.findUnique({
             where: whereClause,
             include: {
@@ -56,11 +57,11 @@ export async function GET(request: Request) {
 
         console.log('modules array after split:', modules ? modules.split(',').map(m => m.trim()) : 'undefined');
         console.log('Found exam:', exam ? 'YES' : 'NO');
-        // @ts-ignore - questions field exists after migration
+        // @ts-expect-error - questions field exists with new schema
         console.log('Questions found:', exam?.questions.length || 0);
-        // @ts-ignore - questions field exists after migration
+        // @ts-expect-error - questions field exists with new schema
         if (exam?.questions && exam.questions.length > 0) {
-            // @ts-ignore - questions field exists after migration
+            // @ts-expect-error - questions field exists with new schema
             console.log('Sample question modules:', exam.questions.slice(0, 3).map(q => q.module));
         }
         console.log('======================\n');
@@ -69,6 +70,7 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Exam not found' }, { status: 404 });
         }
 
+        // @ts-expect-error - questions field exists with new schema
         let questions = exam.questions;
 
         // Blueprint-based distribution (only for mode-based quizzes, not module selection)
@@ -89,13 +91,13 @@ export async function GET(request: Request) {
                 console.log('Using blueprint distribution:', distribution);
 
                 // Select questions based on distribution
-                const selectedQuestions: typeof questions = [];
+                const selectedQuestions: any[] = [];
 
                 for (const [moduleName, count] of Object.entries(distribution)) {
                     if (count === 0) continue;
 
                     // Filter questions for this module
-                    const moduleQuestions = questions.filter(q => q.module === moduleName);
+                    const moduleQuestions = questions.filter((q: any) => q.module === moduleName);
 
                     // Shuffle and pick the required count
                     const shuffled = moduleQuestions.sort(() => Math.random() - 0.5);
@@ -124,7 +126,7 @@ export async function GET(request: Request) {
             }
         }
 
-        const formattedQuestions = questions.map(q => ({
+        const formattedQuestions = questions.map((q: any) => ({
             ...q,
             options: JSON.parse(q.options) // Parse the stored JSON string back to array
         }));
