@@ -33,15 +33,10 @@ export async function GET(request: Request) {
                         options: true,
                         correct: true,
                         module: true,
-                        // @ts-ignore - New fields from schema migration
                         answerCount: true,
-                        // @ts-ignore - New fields from schema migration
                         correctAnswers: true,
-                        // @ts-ignore - New fields from schema migration
                         hasContext: true,
-                        // @ts-ignore - New fields from schema migration
                         contextType: true,
-                        // @ts-ignore - New fields from schema migration
                         contexts: {
                             select: {
                                 id: true,
@@ -57,13 +52,16 @@ export async function GET(request: Request) {
                     }
                 }
             },
-        });
+        } as any); // Type assertion for new schema fields not yet in Prisma client
 
-        console.log('modules array after split:', modules ? modules.split(',').map(m => m.trim()) : 'undefined');
+        console.log('modules array after split:', modules ? modules.split(',').map((m: any) => m.trim()) : 'undefined');
         console.log('Found exam:', exam ? 'YES' : 'NO');
+        // @ts-ignore - questions field exists after migration
         console.log('Questions found:', exam?.questions.length || 0);
+        // @ts-ignore - questions field exists after migration
         if (exam?.questions && exam.questions.length > 0) {
-            console.log('Sample question modules:', exam.questions.slice(0, 3).map(q => q.module));
+            // @ts-ignore - questions field exists after migration
+            console.log('Sample question modules:', exam.questions.slice(0, 3).map((q: any) => q.module));
         }
         console.log('======================\n');
 
@@ -71,7 +69,7 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Exam not found' }, { status: 404 });
         }
 
-        let questions = exam.questions;
+        let questions = (exam as any).questions;
 
         // Blueprint-based distribution (only for mode-based quizzes, not module selection)
         if (!modules && mode && ['short', 'grind', 'full'].includes(mode)) {
@@ -97,7 +95,7 @@ export async function GET(request: Request) {
                     if (count === 0) continue;
 
                     // Filter questions for this module
-                    const moduleQuestions = questions.filter(q => q.module === moduleName);
+                    const moduleQuestions = questions.filter((q: any) => q.module === moduleName);
 
                     // Shuffle and pick the required count
                     const shuffled = moduleQuestions.sort(() => Math.random() - 0.5);
@@ -126,7 +124,7 @@ export async function GET(request: Request) {
             }
         }
 
-        const formattedQuestions = questions.map(q => ({
+        const formattedQuestions = questions.map((q: any) => ({
             ...q,
             options: JSON.parse(q.options) // Parse the stored JSON string back to array
         }));
