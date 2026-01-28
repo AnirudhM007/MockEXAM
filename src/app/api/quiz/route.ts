@@ -33,10 +33,15 @@ export async function GET(request: Request) {
                         options: true,
                         correct: true,
                         module: true,
+                        // @ts-ignore - New fields from schema migration
                         answerCount: true,
+                        // @ts-ignore - New fields from schema migration
                         correctAnswers: true,
+                        // @ts-ignore - New fields from schema migration
                         hasContext: true,
+                        // @ts-ignore - New fields from schema migration
                         contextType: true,
+                        // @ts-ignore - New fields from schema migration
                         contexts: {
                             select: {
                                 id: true,
