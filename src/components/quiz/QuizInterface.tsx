@@ -13,6 +13,8 @@ interface Question {
     text: string;
     options: string[];
     correct: string;
+    answerCount?: number;  // Number of correct answers (1 = single, 2+ = multi)
+    correctAnswers?: string;  // JSON string of correct answers for multi-select
     contexts?: Array<{
         id: string;
         type: string;
@@ -30,7 +32,7 @@ interface QuizInterfaceProps {
 export function QuizInterface({ questions, examName }: QuizInterfaceProps) {
     const router = useRouter();
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [answers, setAnswers] = useState<Record<string, string>>({});
+    const [answers, setAnswers] = useState<Record<string, string | string[]>>({});  // Support both single and multi-select
     const [timeLeft, setTimeLeft] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showFeedback, setShowFeedback] = useState(false);
@@ -49,13 +51,48 @@ export function QuizInterface({ questions, examName }: QuizInterfaceProps) {
     const handleOptionSelect = (option: string) => {
         if (showFeedback) return; // Don't allow changing answer after feedback is shown
 
-        setAnswers(prev => ({
-            ...prev,
-            [questions[currentIndex].id]: option
-        }));
+        const currentQuestion = questions[currentIndex];
+        const isMultiSelect = (currentQuestion.answerCount || 1) > 1;
 
-        // Show immediate feedback
-        const correct = questions[currentIndex].correct === option;
+        if (isMultiSelect) {
+            // Multi-select: toggle option in array
+            setAnswers(prev => {
+                const currentAnswers = (prev[currentQuestion.id] as string[]) || [];
+                const newAnswers = currentAnswers.includes(option)
+                    ? currentAnswers.filter(a => a !== option)
+                    : [...currentAnswers, option];
+                return {
+                    ...prev,
+                    [currentQuestion.id]: newAnswers
+                };
+            });
+        } else {
+            // Single-select: replace answer and show feedback
+            setAnswers(prev => ({
+                ...prev,
+                [currentQuestion.id]: option
+            }));
+
+            // Show immediate feedback for single-select
+            const correct = currentQuestion.correct === option;
+            setIsCorrect(correct);
+            setShowFeedback(true);
+        }
+    };
+
+    // Handle submit for multi-select questions
+    const handleMultiSelectSubmit = () => {
+        const currentQuestion = questions[currentIndex];
+        const selectedAnswers = answers[currentQuestion.id] as string[] || [];
+        const correctAnswers = currentQuestion.correctAnswers
+            ? JSON.parse(currentQuestion.correctAnswers)
+            : [currentQuestion.correct];
+
+        // Check if all correct answers selected and no incorrect ones
+        const allCorrectSelected = correctAnswers.every((ans: string) => selectedAnswers.includes(ans));
+        const noIncorrectSelected = selectedAnswers.every(ans => correctAnswers.includes(ans));
+        const correct = allCorrectSelected && noIncorrectSelected && selectedAnswers.length === correctAnswers.length;
+
         setIsCorrect(correct);
         setShowFeedback(true);
     };
@@ -80,7 +117,23 @@ export function QuizInterface({ questions, examName }: QuizInterfaceProps) {
     const calculateScore = () => {
         let score = 0;
         questions.forEach(q => {
-            if (answers[q.id] === q.correct) score++;
+            const answer = answers[q.id];
+            const isMultiSelect = (q.answerCount || 1) > 1;
+
+            if (isMultiSelect) {
+                // Multi-select scoring
+                const selectedAnswers = (answer as string[]) || [];
+                const correctAnswers = q.correctAnswers ? JSON.parse(q.correctAnswers) : [q.correct];
+
+                const allCorrectSelected = correctAnswers.every((ans: string) => selectedAnswers.includes(ans));
+                const noIncorrectSelected = selectedAnswers.every(ans => correctAnswers.includes(ans));
+                if (allCorrectSelected && noIncorrectSelected && selectedAnswers.length === correctAnswers.length) {
+                    score++;
+                }
+            } else {
+                // Single-select scoring
+                if (answer === q.correct) score++;
+            }
         });
         return score;
     };
@@ -171,10 +224,31 @@ export function QuizInterface({ questions, examName }: QuizInterfaceProps) {
                                 <QuestionContext contexts={currentQuestion.contexts.filter(c => c.position > 0)} />
                             )}
 
+                            {/* Multi-select hint */}
+                            {(currentQuestion.answerCount || 1) > 1 && !showFeedback && (
+                                <div className="bg-[var(--color-cyber-highlight)] border border-[var(--color-cyber-blue)] rounded-lg p-3 flex items-center gap-2">
+                                    <svg className="w-5 h-5 text-[var(--color-cyber-blue)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span className="text-[var(--color-cyber-blue)] text-sm font-medium">
+                                        Select {currentQuestion.answerCount} answers for this question
+                                    </span>
+                                </div>
+                            )}
+
                             <div className="grid gap-3">
                                 {currentQuestion.options.map((option, idx) => {
-                                    const isSelected = answers[currentQuestion.id] === option;
-                                    const isCorrectAnswer = currentQuestion.correct === option;
+                                    const isMultiSelect = (currentQuestion.answerCount || 1) > 1;
+                                    const selectedAnswers = isMultiSelect ? (answers[currentQuestion.id] as string[] || []) : [];
+                                    const isSelected = isMultiSelect
+                                        ? selectedAnswers.includes(option)
+                                        : answers[currentQuestion.id] === option;
+
+                                    // Get all correct answers for multi-select
+                                    const correctAnswers = currentQuestion.correctAnswers
+                                        ? JSON.parse(currentQuestion.correctAnswers)
+                                        : [currentQuestion.correct];
+                                    const isCorrectAnswer = correctAnswers.includes(option);
                                     const letter = String.fromCharCode(65 + idx);
 
                                     // Determine styling based on feedback state
@@ -275,7 +349,18 @@ export function QuizInterface({ questions, examName }: QuizInterfaceProps) {
                                 &larr; Previous
                             </Button>
 
-                            {currentIndex === questions.length - 1 ? (
+                            {/* Submit/Continue buttons */}
+                            {(currentQuestion.answerCount || 1) > 1 && !showFeedback ? (
+                                // Multi-select: Show submit button
+                                <Button
+                                    variant="primary"
+                                    onClick={handleMultiSelectSubmit}
+                                    disabled={(answers[currentQuestion.id] as string[] || []).length === 0}
+                                    className="disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Submit Answers
+                                </Button>
+                            ) : currentIndex === questions.length - 1 ? (
                                 <Button
                                     variant="primary"
                                     onClick={() => showFeedback && handleSubmit()}

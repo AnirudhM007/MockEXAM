@@ -22,6 +22,10 @@ model Question {
   correct   String
   module    String?
   
+  // Multi-select support
+  answerCount     Int?     @default(1)  // Number of correct answers (1 = single, 2+ = multi)
+  correctAnswers  String?  @db.Text     // JSON array of all correct answers for multi-select
+  
   // Context fields for images, code blocks, etc.
   hasContext   Boolean  @default(false)
   contextType  String?  // "image", "code", "diagram", "mixed"

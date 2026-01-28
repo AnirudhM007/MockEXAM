@@ -209,20 +209,37 @@ async function extractQuestionsFromPDF(pdfPath: string) {
             const o = optMatches[j];
             const nextO = optMatches[j + 1];
             const contentEnd = nextO ? nextO.index : safeOptionsBlock.length;
-            const optText = safeOptionsBlock.slice(o.index + o.matchLen, contentEnd).trim();
+            let optText = safeOptionsBlock.slice(o.index + o.matchLen, contentEnd).trim();
+
+            // Clean watermarks from options
+            optText = optText.replace(/Data\s+staging\s+Certify\s+For\s+Sure.*?Dumps\s+\d*/gi, '').trim();
+            optText = optText.replace(/Certify\s+For\s+Sure.*?Certification\s+Dumps\s+\d*/gi, '').trim();
+            optText = optText.replace(/IT\s+Exam\s+Dumps.*?Certification\s+Dumps\s+\d*/gi, '').trim();
+            optText = optText.replace(/The\s+No\.?\s*1\s+IT\s+Certification\s+Dumps\s+\d*/gi, '').trim();
+
             optionMap[o.letter] = optText;
             optionsList.push(optText);
         }
 
-        const correctText = optionMap[answerLetters[0]];
-        if (!correctText) continue;
+        // Detect if multi-select question
+        const isMultiSelect = answerLetters.length > 1;
+        const answerCount = answerLetters.length;
+
+        // For multi-select, get all correct answers
+        const correctAnswers = answerLetters.map(letter => optionMap[letter]).filter(Boolean);
+        if (correctAnswers.length === 0) continue;
+
+        // Primary correct answer (for backward compatibility)
+        const correctText = correctAnswers[0];
 
         questionsFromThisPDF.push({
             text: questionText,
             options: JSON.stringify(optionsList),
             correct: correctText,
             module: moduleName,
-            examName: 'CEH'
+            examName: 'CEH',
+            answerCount: answerCount,
+            correctAnswers: isMultiSelect ? JSON.stringify(correctAnswers) : null
         });
     }
 
@@ -310,6 +327,10 @@ async function main() {
                     correct: q.correct,
                     // @ts-ignore
                     module: q.module,
+                    // @ts-ignore
+                    answerCount: q.answerCount || 1,
+                    // @ts-ignore
+                    correctAnswers: q.correctAnswers,
                     examId: exam.id
                 }
             })

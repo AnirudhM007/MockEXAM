@@ -33,6 +33,8 @@ export async function GET(request: Request) {
                         options: true,
                         correct: true,
                         module: true,
+                        answerCount: true,
+                        correctAnswers: true,
                         hasContext: true,
                         contextType: true,
                         contexts: {
@@ -66,18 +68,60 @@ export async function GET(request: Request) {
 
         let questions = exam.questions;
 
-        // Shuffle questions
-        questions = questions.sort(() => Math.random() - 0.5);
+        // Blueprint-based distribution (only for mode-based quizzes, not module selection)
+        if (!modules && mode && ['short', 'grind', 'full'].includes(mode)) {
+            // Import distribution logic
+            const { calculateModuleDistribution } = await import('@/lib/blueprint');
 
-        // Limit based on mode
-        let limit = questions.length;
-        if (mode === 'short') limit = 15;
-        else if (mode === 'medium') limit = 25;
-        else if (mode === 'grind') limit = 50;
-        else if (mode === 'full') limit = 125;
-        // No mode specified = all questions
+            // Map mode names
+            const modeMapping: Record<string, 'short' | 'quick' | 'full'> = {
+                'short': 'short',    // Quick Scan: 15 questions
+                'grind': 'quick',    // Short Test: 50 questions
+                'full': 'full'       // Full Length: 125 questions
+            };
 
-        const selectedQuestions = questions.slice(0, limit).map(q => ({
+            const blueprintMode = modeMapping[mode];
+            if (blueprintMode) {
+                const distribution = calculateModuleDistribution(blueprintMode);
+                console.log('Using blueprint distribution:', distribution);
+
+                // Select questions based on distribution
+                const selectedQuestions: typeof questions = [];
+
+                for (const [moduleName, count] of Object.entries(distribution)) {
+                    if (count === 0) continue;
+
+                    // Filter questions for this module
+                    const moduleQuestions = questions.filter(q => q.module === moduleName);
+
+                    // Shuffle and pick the required count
+                    const shuffled = moduleQuestions.sort(() => Math.random() - 0.5);
+                    const picked = shuffled.slice(0, Math.min(count, shuffled.length));
+
+                    selectedQuestions.push(...picked);
+
+                    console.log(`${moduleName}: picked ${picked.length}/${count} (available: ${moduleQuestions.length})`);
+                }
+
+                // Shuffle final selection
+                questions = selectedQuestions.sort(() => Math.random() - 0.5);
+            } else {
+                // Fallback to simple shuffle and limit
+                questions = questions.sort(() => Math.random() - 0.5);
+                const limit = mode === 'medium' ? 25 : questions.length;
+                questions = questions.slice(0, limit);
+            }
+        } else {
+            // Module-specific quiz or no mode: just shuffle
+            questions = questions.sort(() => Math.random() - 0.5);
+
+            // Apply limits for other modes
+            if (mode === 'medium') {
+                questions = questions.slice(0, 25);
+            }
+        }
+
+        const formattedQuestions = questions.map(q => ({
             ...q,
             options: JSON.parse(q.options) // Parse the stored JSON string back to array
         }));
@@ -85,7 +129,7 @@ export async function GET(request: Request) {
         return NextResponse.json({
             exam: exam.name,
             mode,
-            questions: selectedQuestions
+            questions: formattedQuestions
         });
 
     } catch (error) {
