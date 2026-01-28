@@ -20,7 +20,7 @@ async function checkModuleCounts() {
         // Count questions per module
         const moduleCounts: Record<string, number> = {};
         questions.forEach(q => {
-            const module = q.module;
+            const module = q.module || 'Unknown';
             moduleCounts[module] = (moduleCounts[module] || 0) + 1;
         });
 
