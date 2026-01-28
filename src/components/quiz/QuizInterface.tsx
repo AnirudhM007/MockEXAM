@@ -278,7 +278,8 @@ export function QuizInterface({ questions, examName }: QuizInterfaceProps) {
                                             )}
                                         >
                                             <span className={cn(
-                                                "w-8 h-8 flex items-center justify-center rounded-full border mr-4 font-bold text-sm transition-colors",
+                                                "w-8 h-8 flex items-center justify-center border mr-4 font-bold text-sm transition-colors",
+                                                isMultiSelect ? "rounded-md" : "rounded-full", // Square for multi, circle for single
                                                 showFeedback && isCorrectAnswer
                                                     ? "bg-green-500 text-white border-green-500"
                                                     : showFeedback && isSelected

@@ -42,7 +42,8 @@ async function simulateAPIRequest() {
             console.log('\nAll question modules:');
             const moduleCounts: Record<string, number> = {};
             exam.questions.forEach(q => {
-                moduleCounts[q.module] = (moduleCounts[q.module] || 0) + 1;
+                const module = q.module || 'Unknown';
+                moduleCounts[module] = (moduleCounts[module] || 0) + 1;
             });
             Object.entries(moduleCounts).forEach(([mod, count]) => {
                 console.log(`  - ${mod}: ${count} questions`);
