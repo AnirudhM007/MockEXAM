@@ -25,11 +25,14 @@ async function checkModuleNames() {
         console.log(`\nFound ${questions.length} questions with "Evading" in module name\n`);
 
         if (questions.length > 0) {
-            console.log('Exact module name in database:');
-            console.log(`"${questions[0].module}"\n`);
+            const firstQuestion = questions[0];
+            const moduleName = firstQuestion.module || 'undefined';
 
-            console.log('Module name length:', questions[0].module.length);
-            console.log('Module name bytes:', Buffer.from(questions[0].module).toString('hex'));
+            console.log('Exact module name in database:');
+            console.log(`"${moduleName}"\n`);
+
+            console.log('Module name length:', moduleName.length);
+            console.log('Module name bytes:', Buffer.from(moduleName).toString('hex'));
 
             console.log('\nFirst 3 questions:');
             questions.slice(0, 3).forEach((q, i) => {
